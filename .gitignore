@@ -34,3 +34,4 @@
 # CUSTOM
 .cache/
 build/
+.vscode/
