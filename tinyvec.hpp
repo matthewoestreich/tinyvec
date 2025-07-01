@@ -184,8 +184,8 @@ std::ostream& operator<<(std::ostream& os, const tinyvec<T, A>& vec) {
 }
 
 // To be able to do:
-// > tinyvec<T> tv{T};
-// > std::println("{}", tv);
+// |tinyvec<T> tv{T};|
+// |std::println("{}", tv);|
 template <typename T, typename A>
 struct std::formatter<tinyvec<T, A>> {
   constexpr auto parse(std::format_parse_context& ctx) { return ctx.begin(); }
@@ -193,15 +193,19 @@ struct std::formatter<tinyvec<T, A>> {
   auto format(const tinyvec<T, A>& obj, std::format_context& ctx) const {
     static_assert(std::formattable<T, char>,
                   "tinyvec<T, A> requires T to be formattable");
+
+    size_t sizeMinusOne = obj.size() - 1;
+
     std::string s = "[";
     for (size_t i = 0; i < obj.size(); ++i) {
-      if (i == obj.size() - 1) {
-        s += std::format("{}", obj[i]);
-      } else {
+      if (i < sizeMinusOne) {
         s += std::format("{}, ", obj[i]);
+      } else {
+        s += std::format("{}", obj[i]);
       }
     }
     s += "]";
-    return std::formatter<std::string>{}.format(s, ctx);
+
+    return std::format_to(ctx.out(), "{}", s);
   }
 };
